@@ -1,8 +1,11 @@
 import axios from "axios";
 import { delay } from "@std/async/delay";
 import * as v from "valibot";
-const SWITCH_TOKEN =
-  "OThmN2U0MmMyZTNhNGY4NmE3NGViNDNmYmI0MWVkMzk6MGEyNDQ5YTItMDAxYS00NTFlLWFmZWMtM2U4MTI5MDFjNGQ3";
+
+const auth = {
+  username: "98f7e42c2e3a4f86a74eb43fbb41ed39",
+  password: "0a2449a2-001a-451e-afec-3e812901c4d7",
+};
 
 const http = axios.create({
   headers: { "User-Agent": `github.com/RuiNtD/FNGG-LockerGenerator` },
@@ -17,10 +20,8 @@ export async function getAccessToken() {
     "https://account-public-service-prod.ol.epicgames.com/account/api/oauth/token",
     { grant_type: "client_credentials" },
     {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${SWITCH_TOKEN}`,
-      },
+      auth,
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
     }
   );
   return v.parse(OAuthToken, data).access_token;
@@ -33,7 +34,7 @@ export const OAuthDeviceAuth = v.object({
 
 export async function createDeviceCode(accessToken: string) {
   const { data } = await http.post(
-    "https://account-public-service-prod03.ol.epicgames.com/account/api/oauth/deviceAuthorization",
+    "https://account-public-service-prod.ol.epicgames.com/account/api/oauth/deviceAuthorization",
     {},
     {
       headers: {
@@ -58,13 +59,11 @@ export async function waitForDeviceCodeCompletion(code: string) {
   while (true) {
     try {
       const resp = await http.post(
-        "https://account-public-service-prod03.ol.epicgames.com/account/api/oauth/token",
+        "https://account-public-service-prod.ol.epicgames.com/account/api/oauth/token",
         { grant_type: "device_code", device_code: code },
         {
-          headers: {
-            Authorization: `Basic ${SWITCH_TOKEN}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
+          auth,
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }
       );
       return v.parse(EpicAccount, resp.data);
@@ -90,30 +89,20 @@ export const EpicProfile = v.pipe(
 
 export async function getProfile(profile: EpicAccount) {
   const { data } = await http.post(
-    "https://fngw-mcp-gc-livefn.ol.epicgames.com" +
-      `/fortnite/api/game/v2/profile/${profile.account_id}/client/QueryProfile?profileId=athena&rvn=-1`,
+    "https://fngw-mcp-gc-livefn.ol.epicgames.com/fortnite/api" +
+      `/game/v2/profile/${profile.account_id}/client/QueryProfile?profileId=athena`,
     {},
-    {
-      headers: {
-        Authorization: `Bearer ${profile.access_token}`,
-        "Content-Type": "application/json",
-      },
-    }
+    { headers: { Authorization: `Bearer ${profile.access_token}` } }
   );
   return v.parse(EpicProfile, data);
 }
 
 export async function getBannerProfile(profile: EpicAccount) {
   const { data } = await http.post(
-    "https://fngw-mcp-gc-livefn.ol.epicgames.com" +
-      `/fortnite/api/game/v2/profile/${profile.account_id}/client/QueryProfile?profileId=common_core&rvn=-1`,
+    "https://fngw-mcp-gc-livefn.ol.epicgames.com/fortnite/api" +
+      `/game/v2/profile/${profile.account_id}/client/QueryProfile`,
     {},
-    {
-      headers: {
-        Authorization: `Bearer ${profile.access_token}`,
-        "Content-Type": "application/json",
-      },
-    }
+    { headers: { Authorization: `Bearer ${profile.access_token}` } }
   );
   return v.parse(EpicProfile, data);
 }
