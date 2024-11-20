@@ -1,6 +1,0 @@
-coloredlogs
-pyperclip
-inquirer
-aiohttp
-asyncio
-yarl
