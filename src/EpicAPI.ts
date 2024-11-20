@@ -52,7 +52,7 @@ const EpicAccount = v.object({
 });
 type EpicAccount = v.InferOutput<typeof EpicAccount>;
 
-export async function wait_for_device_code_completion(code: string) {
+export async function waitForDeviceCodeCompletion(code: string) {
   console.info("Waiting for authentication...");
 
   while (true) {
@@ -74,21 +74,39 @@ export async function wait_for_device_code_completion(code: string) {
   }
 }
 
-export const EpicProfile = v.object({
-  profileChanges: v.tuple([
-    v.object({
-      profile: v.object({
-        created: v.string(),
-        items: v.record(v.string(), v.object({ templateId: v.string() })),
+export const EpicProfile = v.pipe(
+  v.object({
+    profileChanges: v.tuple([
+      v.object({
+        profile: v.object({
+          created: v.string(),
+          items: v.record(v.string(), v.object({ templateId: v.string() })),
+        }),
       }),
-    }),
-  ]),
-});
+    ]),
+  }),
+  v.transform((v) => v.profileChanges[0].profile)
+);
 
-export async function get_profile(profile: EpicAccount) {
+export async function getProfile(profile: EpicAccount) {
   const { data } = await http.post(
     "https://fngw-mcp-gc-livefn.ol.epicgames.com" +
       `/fortnite/api/game/v2/profile/${profile.account_id}/client/QueryProfile?profileId=athena&rvn=-1`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${profile.access_token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return v.parse(EpicProfile, data);
+}
+
+export async function getBannerProfile(profile: EpicAccount) {
+  const { data } = await http.post(
+    "https://fngw-mcp-gc-livefn.ol.epicgames.com" +
+      `/fortnite/api/game/v2/profile/${profile.account_id}/client/QueryProfile?profileId=common_core&rvn=-1`,
     {},
     {
       headers: {

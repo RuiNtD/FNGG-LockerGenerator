@@ -3,9 +3,10 @@
 import clipboard from "clipboardy";
 import {
   createDeviceCode,
-  get_profile as getProfile,
+  getProfile,
   getAccessToken,
-  wait_for_device_code_completion as waitForDeviceCodeCompletion,
+  waitForDeviceCodeCompletion,
+  getBannerProfile,
 } from "./EpicAPI.ts";
 import { getFNGGBundles, getFNGGItems } from "./FNGGAPI.ts";
 import open from "open";
@@ -14,8 +15,6 @@ import { delay } from "@std/async/delay";
 import process from "node:process";
 import { confirm } from "@inquirer/prompts";
 import * as zlib from "node:zlib";
-
-const VERSION = "2.0";
 
 const access_token = await getAccessToken();
 
@@ -26,23 +25,28 @@ const { device_code, verification_uri_complete } = await createDeviceCode(
 await open(verification_uri_complete);
 
 const account = await waitForDeviceCodeCompletion(device_code);
-const data = await getProfile(account);
 
 console.info(`Logged in as: ${account.displayName}\n`);
 
 if (!(await confirm({ message: "Do you want to start the process?" }))) {
-  console.info(`Closing LockerGenerator v${VERSION}...`);
+  console.info("Closing LockerGenerator...");
   await delay(1);
   process.exit();
 }
 
-const accountItems = data.profileChanges[0].profile.items;
-const athenaCreationDate = data.profileChanges[0].profile.created;
+const profile = await getProfile(account);
+const accountItems = profile.items;
+const bannerItems = (await getBannerProfile(account)).items;
 
 console.info("Generating the locker...");
-const allItems = Object.keys(accountItems).map(
-  (item) => accountItems[item].templateId.split(":")[1]
-);
+const allItems = [
+  ...Object.keys(accountItems).map(
+    (item) => accountItems[item].templateId.split(":")[1]
+  ),
+  ...Object.keys(bannerItems).map(
+    (item) => bannerItems[item].templateId.split(":")[1]
+  ),
+];
 
 let locker: string[] = [];
 const fnggItems = await getFNGGItems();
@@ -86,11 +90,8 @@ const diff = ints.map((value, index) =>
   (index > 0 ? value - ints[index - 1] : value).toString()
 );
 
-const compressed = zlib.deflateRawSync([athenaCreationDate, ...diff].join(","));
+const compressed = zlib.deflateRawSync([profile.created, ...diff].join(","));
 const encoded = compressed.toString("base64url");
-
-// const compressed = Bun.deflateSync(`${athenaCreationDate},${diff.join(",")}`);
-// const encoded = Buffer.from(compressed).toString("base64url");
 
 const url = `https://fortnite.gg/my-locker?items=${encoded}`;
 await clipboard.write(url);
