@@ -13,32 +13,39 @@ import open from "open";
 import { getFNAPICosmetics } from "./FNAPI.ts";
 import { delay } from "@std/async/delay";
 import process from "node:process";
-import { confirm } from "@inquirer/prompts";
 import * as zlib from "node:zlib";
+import { parseArgs } from "@std/cli/parse-args";
+import { shortenURL } from "./vgd.ts";
+
+const args = parseArgs(Deno.args, {
+  boolean: ["shorten"],
+});
 
 const access_token = await getAccessToken();
-
-console.info("Opening device code link in a new tab...");
 const { device_code, verification_uri_complete } = await createDeviceCode(
   access_token
 );
+
+console.log(`Please login to Fortnite: ${verification_uri_complete}`);
 await open(verification_uri_complete);
 
 const account = await waitForDeviceCodeCompletion(device_code);
+console.log();
+console.log(`Signed in as ${account.displayName}`);
 
-console.info(`Logged in as: ${account.displayName}\n`);
-
-if (!(await confirm({ message: "Do you want to start the process?" }))) {
-  console.info("Closing LockerGenerator...");
+if (!confirm("Do you want to start the process?")) {
+  console.log("Closing...");
   await delay(1);
   process.exit();
 }
+
+console.log();
+console.log("Generating the locker...");
 
 const profile = await getProfile(account);
 const accountItems = profile.items;
 const bannerItems = (await getBannerProfile(account)).items;
 
-console.info("Generating the locker...");
 const allItems = [
   ...Object.keys(accountItems).map(
     (item) => accountItems[item].templateId.split(":")[1]
@@ -68,8 +75,6 @@ for (const id of locker) {
   for (const emote of cosmetic.builtInEmoteIds || []) locker.push(emote);
 }
 
-console.log("Found", locker.length, "items.");
-
 // Add bundles
 const allBundles = await getFNGGBundles();
 for (const [bundle, { items }] of Object.entries(allBundles)) {
@@ -85,19 +90,26 @@ for (const [bundle, { items }] of Object.entries(allBundles)) {
 
 // Finalize
 locker = [...new Set(locker)]; // Remove duplicates
-const ints = locker.map((id) => parseInt(fnggItems[id])).sort();
+const ints = locker.map((id) => parseInt(fnggItems[id])).sort((a, b) => a - b);
 const diff = ints.map((value, index) =>
-  (index > 0 ? value - ints[index - 1] : value).toString()
+  index > 0 ? value - ints[index - 1] : value
 );
 
 const compressed = zlib.deflateRawSync([profile.created, ...diff].join(","));
 const encoded = compressed.toString("base64url");
 
-const url = `https://fortnite.gg/my-locker?items=${encoded}`;
-await clipboard.write(url);
-await open(url);
+console.log("Found", locker.length, "items.");
+console.log();
 
-console.log("Link successfully copied to the clipboard.");
+let url = `https://fortnite.gg/my-locker?items=${encoded}`;
+if (args.shorten) url = await shortenURL(url);
+console.log(url);
+try {
+  await clipboard.write(url);
+  await open(url);
+} catch {
+  //
+}
 alert("Press Enter to close...");
 
 // For some reason inquirer stops Deno from exiting smoothly

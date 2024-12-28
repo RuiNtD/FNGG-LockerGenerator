@@ -5,6 +5,7 @@
   "imports": {
     "@inquirer/prompts": "npm:@inquirer/prompts@^7.1.0",
     "@std/async": "jsr:@std/async@^1.0.8",
+    "@std/cli": "jsr:@std/cli@^1.0.9",
     "axios": "npm:axios@^1.7.7",
     "clipboardy": "npm:clipboardy@^4.0.0",
     "open": "npm:open@^10.1.0",

@@ -2,6 +2,7 @@
   "version": "4",
   "specifiers": {
     "jsr:@std/async@^1.0.8": "1.0.8",
+    "jsr:@std/cli@^1.0.9": "1.0.9",
     "npm:@inquirer/figures@^1.0.8": "1.0.8",
     "npm:@inquirer/prompts@^7.1.0": "7.1.0_@types+node@22.9.0",
     "npm:axios@^1.7.7": "1.7.7",
@@ -13,6 +14,9 @@
   "jsr": {
     "@std/async@1.0.8": {
       "integrity": "c057c5211a0f1d12e7dcd111ab430091301b8d64b4250052a79d277383bc3ba7"
+    },
+    "@std/cli@1.0.9": {
+      "integrity": "557e5865af000efbf3f737dcfea5b8ab86453594f4a9cd8d08c9fa83d8e3f3bc"
     }
   },
   "npm": {
@@ -451,6 +455,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/async@^1.0.8",
+      "jsr:@std/cli@^1.0.9",
       "npm:@inquirer/prompts@^7.1.0",
       "npm:axios@^1.7.7",
       "npm:clipboardy@4",
