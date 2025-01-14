@@ -8,7 +8,7 @@ import {
   waitForDeviceCodeCompletion,
   getBannerProfile,
 } from "./EpicAPI.ts";
-import { getFNGGBundles, getFNGGItems } from "./FNGGAPI.ts";
+import { getFNGGBundles, getFNGGItems, getPackContents } from "./FNGGAPI.ts";
 import open from "open";
 import { getFNAPICosmetics } from "./FNAPI.ts";
 import { delay } from "@std/async/delay";
@@ -86,6 +86,24 @@ for (const [bundle, { items }] of Object.entries(allBundles)) {
     }
   }
   if (bundleOwned) locker.push(bundle);
+}
+
+// Packs
+for (const [fnID, ggID] of Object.entries(fnggItems)) {
+  if (!fnID.startsWith("Pack_")) continue;
+  const items = await getPackContents(ggID);
+  if (!items) continue;
+
+  let bundleOwned = true;
+  for (const item of items) {
+    const itemID = Object.keys(fnggItems).find((x) => fnggItems[x] === item);
+    if (!itemID) continue;
+    if (!locker.includes(itemID)) {
+      bundleOwned = false;
+      break;
+    }
+  }
+  if (bundleOwned) locker.push(fnID);
 }
 
 // Finalize

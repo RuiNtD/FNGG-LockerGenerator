@@ -1,8 +1,12 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@david/path@0.2": "0.2.0",
     "jsr:@std/async@^1.0.8": "1.0.8",
     "jsr:@std/cli@^1.0.9": "1.0.9",
+    "jsr:@std/fs@1": "1.0.9",
+    "jsr:@std/path@1": "1.0.8",
+    "jsr:@std/path@^1.0.8": "1.0.8",
     "npm:@inquirer/figures@^1.0.8": "1.0.8",
     "npm:@inquirer/prompts@^7.1.0": "7.1.0_@types+node@22.9.0",
     "npm:axios@^1.7.7": "1.7.7",
@@ -12,11 +16,27 @@
     "npm:valibot@^1.0.0-beta.3": "1.0.0-beta.3"
   },
   "jsr": {
+    "@david/path@0.2.0": {
+      "integrity": "f2d7aa7f02ce5a55e27c09f9f1381794acb09d328f8d3c8a2e3ab3ffc294dccd",
+      "dependencies": [
+        "jsr:@std/fs",
+        "jsr:@std/path@1"
+      ]
+    },
     "@std/async@1.0.8": {
       "integrity": "c057c5211a0f1d12e7dcd111ab430091301b8d64b4250052a79d277383bc3ba7"
     },
     "@std/cli@1.0.9": {
       "integrity": "557e5865af000efbf3f737dcfea5b8ab86453594f4a9cd8d08c9fa83d8e3f3bc"
+    },
+    "@std/fs@1.0.9": {
+      "integrity": "3eef7e3ed3d317b29432c7dcb3b20122820dbc574263f721cb0248ad91bad890",
+      "dependencies": [
+        "jsr:@std/path@^1.0.8"
+      ]
+    },
+    "@std/path@1.0.8": {
+      "integrity": "548fa456bb6a04d3c1a1e7477986b6cffbce95102d0bb447c67c4ee70e0364be"
     }
   },
   "npm": {
@@ -454,6 +474,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@david/path@0.2",
       "jsr:@std/async@^1.0.8",
       "jsr:@std/cli@^1.0.9",
       "npm:@inquirer/prompts@^7.1.0",

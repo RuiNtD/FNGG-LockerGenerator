@@ -3,6 +3,7 @@
     "start": "./src/index.ts"
   },
   "imports": {
+    "@david/path": "jsr:@david/path@^0.2.0",
     "@inquirer/prompts": "npm:@inquirer/prompts@^7.1.0",
     "@std/async": "jsr:@std/async@^1.0.8",
     "@std/cli": "jsr:@std/cli@^1.0.9",
