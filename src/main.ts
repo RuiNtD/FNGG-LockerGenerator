@@ -119,6 +119,3 @@ let url = `https://fortnite.gg/my-locker?items=${encoded}`;
 url = await shortenURL(url);
 $.logStep("Locker URL:", url);
 alert("Press Enter to close...");
-
-// For some reason inquirer stops Deno from exiting smoothly
-process.exit();
