@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as v from "valibot";
+import * as v from "@valibot/valibot";
 
 export async function shortenURL(url: string): Promise<string> {
   const { data } = await axios.get("https://v.gd/create.php", {

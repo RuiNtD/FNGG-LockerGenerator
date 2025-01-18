@@ -1,6 +1,6 @@
 import axios from "axios";
 import { delay } from "@std/async/delay";
-import * as v from "valibot";
+import * as v from "@valibot/valibot";
 
 const auth = {
   username: "98f7e42c2e3a4f86a74eb43fbb41ed39",

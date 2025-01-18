@@ -1,4 +1,4 @@
-import * as v from "valibot";
+import * as v from "@valibot/valibot";
 import pMemoize from "p-memoize";
 import { Path } from "@david/path";
 

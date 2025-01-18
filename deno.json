@@ -1,16 +1,16 @@
 {
   "tasks": {
-    "start": "./src/index.ts"
+    "start": "./src/main.ts",
+    "compile": "deno compile -o LockerGenerator --icon icon.ico -A src/main.ts"
   },
   "imports": {
     "@david/path": "jsr:@david/path@^0.2.0",
-    "@inquirer/prompts": "npm:@inquirer/prompts@^7.1.0",
-    "@std/async": "jsr:@std/async@^1.0.8",
-    "@std/cli": "jsr:@std/cli@^1.0.9",
-    "axios": "npm:axios@^1.7.7",
+    "@std/async": "jsr:@std/async@^1.0.9",
+    "@std/cli": "jsr:@std/cli@^1.0.10",
+    "@valibot/valibot": "jsr:@valibot/valibot@^0.42.1",
+    "axios": "npm:axios@^1.7.9",
     "clipboardy": "npm:clipboardy@^4.0.0",
     "open": "npm:open@^10.1.0",
-    "p-memoize": "npm:p-memoize@^7.1.1",
-    "valibot": "npm:valibot@^1.0.0-beta.3"
+    "p-memoize": "npm:p-memoize@^7.1.1"
   }
 }
