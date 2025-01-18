@@ -54,8 +54,6 @@ const EpicAccount = v.object({
 type EpicAccount = v.InferOutput<typeof EpicAccount>;
 
 export async function waitForDeviceCodeCompletion(code: string) {
-  console.info("Waiting for authentication...");
-
   while (true) {
     try {
       const resp = await http.post(

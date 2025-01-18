@@ -1,6 +1,6 @@
 import * as v from "@valibot/valibot";
 import pMemoize from "p-memoize";
-import { Path } from "@david/path";
+import $ from "@david/dax";
 
 const FNGGItems = v.record(v.string(), v.string());
 
@@ -21,7 +21,7 @@ async function _getFNGGBundles() {
 }
 export const getFNGGBundles = pMemoize(_getFNGGBundles);
 
-const cacheDir = await new Path("cache/packs").ensureDir();
+const cacheDir = await $.path("cache/packs").ensureDir();
 const PackCache = v.array(v.string());
 export async function getPackContents(id: string) {
   const cacheFile = cacheDir.join(`${id}.json`);
