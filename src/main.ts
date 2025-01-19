@@ -10,12 +10,29 @@ import {
 } from "./EpicAPI.ts";
 import { getFNGGBundles, getFNGGItems, getPackContents } from "./FNGGAPI.ts";
 import { getFNAPICosmetics } from "./FNAPI.ts";
-import process from "node:process";
 import * as zlib from "node:zlib";
 import { shortenURL } from "./shortener.ts";
 import $ from "@david/dax";
-import { bold, blue } from "@std/fmt/colors";
+import { bold, blue, underline } from "@std/fmt/colors";
 import { format as formatDuration } from "@std/fmt/duration";
+import { parseArgs } from "@std/cli/parse-args";
+import { delay } from "@std/async/delay";
+
+let _VERSION_ = "1.0.0";
+
+const argv = parseArgs(Deno.args, {
+  boolean: ["compiled"],
+});
+
+const isCompiled = argv.compiled;
+if (!isCompiled) _VERSION_ += " (dev)";
+export { _VERSION_ };
+const header = bold(underline(`Fortnite.GG Locker Generator v${_VERSION_}`));
+
+console.clear();
+$.log(header);
+// Articifical delay so the version still shows even if it crashes
+await delay(1000);
 
 let account: EpicAccount | undefined;
 while (!account) {
@@ -24,6 +41,8 @@ while (!account) {
     const deviceAuth = await createDeviceAuth(accessToken);
 
     console.clear();
+    $.log(header);
+    $.log();
     $.log(bold("Please sign into Fortnite using this link:"));
     $.log(deviceAuth.verification_uri_complete);
     $.log();
@@ -31,7 +50,7 @@ while (!account) {
     $.log("And enter the code:", deviceAuth.user_code);
     $.log();
     $.logLight(
-      "This code will expire in",
+      "This code will expire after",
       formatDuration(deviceAuth.expires_in * 1000, { ignoreZero: true })
     );
     $.log();
@@ -46,7 +65,7 @@ console.clear();
 $.logStep("Signed in", `as ${account.displayName}`);
 
 if (!(await $.confirm("Do you want to start the process?", { default: true })))
-  process.exit();
+  Deno.exit();
 
 let locker: string[] = [];
 
