@@ -1,42 +1,57 @@
 #!/usr/bin/env -S deno -A
 
 import {
-  createDeviceCode,
+  createDeviceAuth,
   getProfile,
   getAccessToken,
   waitForDeviceCodeCompletion,
   getBannerProfile,
+  EpicAccount,
 } from "./EpicAPI.ts";
 import { getFNGGBundles, getFNGGItems, getPackContents } from "./FNGGAPI.ts";
 import { getFNAPICosmetics } from "./FNAPI.ts";
-import { delay } from "@std/async/delay";
 import process from "node:process";
 import * as zlib from "node:zlib";
 import { shortenURL } from "./shortener.ts";
 import $ from "@david/dax";
-import { bold } from "@std/fmt/colors";
+import { bold, blue } from "@std/fmt/colors";
+import { format as formatDuration } from "@std/fmt/duration";
 
-const access_token = await getAccessToken();
-const { device_code, verification_uri_complete } = await createDeviceCode(
-  access_token
-);
+let account: EpicAccount | undefined;
+while (!account) {
+  try {
+    const accessToken = await getAccessToken();
+    const deviceAuth = await createDeviceAuth(accessToken);
 
-$.log(bold("Please login to Fortnite:"));
-$.log(verification_uri_complete);
+    console.clear();
+    $.log(bold("Please sign into Fortnite using this link:"));
+    $.log(deviceAuth.verification_uri_complete);
+    $.log();
+    $.log("Or go to:", deviceAuth.verification_uri);
+    $.log("And enter the code:", deviceAuth.user_code);
+    $.log();
+    $.logLight(
+      "This code will expire in",
+      formatDuration(deviceAuth.expires_in * 1000, { ignoreZero: true })
+    );
+    $.log();
 
-const account = await waitForDeviceCodeCompletion(device_code);
-$.log();
+    account = await waitForDeviceCodeCompletion(deviceAuth);
+  } catch (e) {
+    if (e != "expired") throw e;
+  }
+}
+
+console.clear();
 $.logStep("Signed in", `as ${account.displayName}`);
 
-if (!(await $.confirm("Do you want to start the process?"))) {
-  $.log("Closing...");
-  await delay(1);
+if (!(await $.confirm("Do you want to start the process?", { default: true })))
   process.exit();
-}
 
 let locker: string[] = [];
 
-const encoded = await $.progress("Generating the locker...").with(async () => {
+const pb = $.progress("Counting cosmetics");
+const url = await pb.with(async () => {
   const profile = await getProfile(account);
   const accountItems = profile.items;
   const bannerItems = (await getBannerProfile(account)).items;
@@ -51,17 +66,19 @@ const encoded = await $.progress("Generating the locker...").with(async () => {
   ];
 
   const fnggItems = await getFNGGItems();
-  const fnggItemsLowercase = Object.keys(fnggItems).map((x) => x.toLowerCase());
+  const fnggItemsKeys = Object.keys(fnggItems);
+  const fnggItemsLowercase = fnggItemsKeys.map((x) => x.toLowerCase());
 
   for (const item of allItems) {
     if (fnggItemsLowercase.includes(item)) {
       const originalId =
-        Object.keys(fnggItems)[fnggItemsLowercase.indexOf(item.toLowerCase())];
+        fnggItemsKeys[fnggItemsLowercase.indexOf(item.toLowerCase())];
       locker.push(originalId);
     }
   }
 
   // Add built-in emotes
+  pb.message("built-in emotes");
   const cosmetics = await getFNAPICosmetics();
   for (const id of locker) {
     const cosmetic = cosmetics.data.find((x) => x.id === id);
@@ -69,17 +86,19 @@ const encoded = await $.progress("Generating the locker...").with(async () => {
     for (const emote of cosmetic.builtInEmoteIds || []) locker.push(emote);
   }
 
+  pb.message("bundles and packs");
+
   // Add bundles
   const allBundles = await getFNGGBundles();
   for (const [bundle, { items }] of Object.entries(allBundles)) {
-    let bundleOwned = true;
+    let owned = true;
     for (const item of items) {
       if (!locker.includes(item)) {
-        bundleOwned = false;
+        owned = false;
         break;
       }
     }
-    if (bundleOwned) locker.push(bundle);
+    if (owned) locker.push(bundle);
   }
 
   // Packs
@@ -88,17 +107,20 @@ const encoded = await $.progress("Generating the locker...").with(async () => {
     const items = await getPackContents(ggID);
     if (!items) continue;
 
-    let bundleOwned = true;
+    let owned = true;
     for (const item of items) {
-      const itemID = Object.keys(fnggItems).find((x) => fnggItems[x] === item);
+      const itemID = fnggItemsKeys.find((x) => fnggItems[x] === item);
       if (!itemID) continue;
       if (!locker.includes(itemID)) {
-        bundleOwned = false;
+        owned = false;
         break;
       }
     }
-    if (bundleOwned) locker.push(fnID);
+    if (owned) locker.push(fnID);
   }
+
+  pb.prefix("Finalizing...");
+  pb.message("");
 
   // Finalize
   locker = [...new Set(locker)]; // Remove duplicates
@@ -109,13 +131,14 @@ const encoded = await $.progress("Generating the locker...").with(async () => {
     index > 0 ? value - ints[index - 1] : value
   );
 
-  const compressed = zlib.deflateRawSync([profile.created, ...diff].join(","));
-  return compressed.toString("base64url");
+  const data = zlib
+    .deflateRawSync(`${profile.created},${diff.join(",")}`)
+    .toString("base64url");
+  return `https://fortnite.gg/my-locker?items=${data}`;
 });
 
 $.logStep("Found", locker.length, "items");
 
-let url = `https://fortnite.gg/my-locker?items=${encoded}`;
-url = await shortenURL(url);
-$.logStep("Locker URL:", url);
-alert("Press Enter to close...");
+const shortened = await shortenURL(url);
+$.logStep("Locker URL:", shortened);
+alert(bold(blue("Press Enter to close")));

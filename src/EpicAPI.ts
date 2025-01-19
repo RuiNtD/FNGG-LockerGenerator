@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { delay } from "@std/async/delay";
 import * as v from "@valibot/valibot";
 
@@ -28,11 +28,16 @@ export async function getAccessToken() {
 }
 
 export const OAuthDeviceAuth = v.object({
-  verification_uri_complete: v.string(),
+  user_code: v.string(),
   device_code: v.string(),
+  verification_uri: v.string(),
+  verification_uri_complete: v.string(),
+  expires_in: v.number(),
+  interval: v.number(),
 });
+export type OAuthDeviceAuth = v.InferOutput<typeof OAuthDeviceAuth>;
 
-export async function createDeviceCode(accessToken: string) {
+export async function createDeviceAuth(accessToken: string) {
   const { data } = await http.post(
     "https://account-public-service-prod.ol.epicgames.com/account/api/oauth/deviceAuthorization",
     {},
@@ -51,22 +56,37 @@ const EpicAccount = v.object({
   displayName: v.string(),
   account_id: v.string(),
 });
-type EpicAccount = v.InferOutput<typeof EpicAccount>;
+export type EpicAccount = v.InferOutput<typeof EpicAccount>;
 
-export async function waitForDeviceCodeCompletion(code: string) {
+const TokenError = v.object({
+  errorCode: v.string(),
+  errorMessage: v.string(),
+});
+
+export async function waitForDeviceCodeCompletion(deviceAuth: OAuthDeviceAuth) {
   while (true) {
     try {
       const resp = await http.post(
         "https://account-public-service-prod.ol.epicgames.com/account/api/oauth/token",
-        { grant_type: "device_code", device_code: code },
+        { grant_type: "device_code", device_code: deviceAuth.device_code },
         {
           auth,
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }
       );
       return v.parse(EpicAccount, resp.data);
-    } catch {
-      await delay(5000);
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        const error = v.parse(TokenError, e.response?.data);
+        if (
+          error.errorCode ===
+          "errors.com.epicgames.account.oauth.authorization_pending"
+        )
+          await delay(deviceAuth.interval * 1000);
+        else if (error.errorCode === "errors.com.epicgames.not_found")
+          throw "expired";
+        else throw error.errorMessage;
+      } else throw e;
     }
   }
 }
@@ -85,10 +105,10 @@ export const EpicProfile = v.pipe(
   v.transform((v) => v.profileChanges[0].profile)
 );
 
-export async function getProfile(profile: EpicAccount) {
+export async function getProfile(profile: EpicAccount, profileId = "athena") {
   const { data } = await http.post(
     "https://fngw-mcp-gc-livefn.ol.epicgames.com/fortnite/api" +
-      `/game/v2/profile/${profile.account_id}/client/QueryProfile?profileId=athena`,
+      `/game/v2/profile/${profile.account_id}/client/QueryProfile?profileId=${profileId}`,
     {},
     { headers: { Authorization: `Bearer ${profile.access_token}` } }
   );
@@ -96,11 +116,5 @@ export async function getProfile(profile: EpicAccount) {
 }
 
 export async function getBannerProfile(profile: EpicAccount) {
-  const { data } = await http.post(
-    "https://fngw-mcp-gc-livefn.ol.epicgames.com/fortnite/api" +
-      `/game/v2/profile/${profile.account_id}/client/QueryProfile`,
-    {},
-    { headers: { Authorization: `Bearer ${profile.access_token}` } }
-  );
-  return v.parse(EpicProfile, data);
+  return await getProfile(profile, "common_core");
 }
