@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as v from "@valibot/valibot";
+import * as v from "valibot";
 
 const SpoomeResp = v.object({
   short_url: v.string(),
@@ -8,13 +8,10 @@ const SpoomeResp = v.object({
 export async function shortenURL(url: string): Promise<string> {
   const { data } = await axios.post(
     "https://spoo.me/",
-    {
-      url,
-      "max-clicks": "1",
-    },
+    { url, "max-clicks": "1" },
     {
       headers: {
-        "content-type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
       },
     }

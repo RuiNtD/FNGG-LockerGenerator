@@ -17,8 +17,10 @@ import { bold, blue, underline } from "@std/fmt/colors";
 import { format as formatDuration } from "@std/fmt/duration";
 import { parseArgs } from "@std/cli/parse-args";
 import { delay } from "@std/async/delay";
+import axios from "axios";
 
-let _VERSION_ = "1.0.0";
+const _USER_AGENT_ = "github.com/RuiNtD/FNGG-LockerGenerator";
+let _VERSION_ = "1.0.1";
 
 const argv = parseArgs(Deno.args, {
   boolean: ["compiled"],
@@ -27,6 +29,9 @@ const argv = parseArgs(Deno.args, {
 const isCompiled = argv.compiled;
 if (!isCompiled) _VERSION_ += " (dev)";
 export { _VERSION_ };
+
+axios.defaults.headers["User-Agent"] = `${_USER_AGENT_} v${_VERSION_}`;
+
 const header = bold(underline(`Fortnite.GG Locker Generator v${_VERSION_}`));
 
 console.clear();
@@ -156,8 +161,8 @@ const url = await pb.with(async () => {
   return `https://fortnite.gg/my-locker?items=${data}`;
 });
 
-$.logStep("Found", locker.length, "items");
+$.logStep(`Found ${locker.length} items`);
 
 const shortened = await shortenURL(url);
-$.logStep("Locker URL:", shortened);
+$.log(bold("Locker URL:"), shortened);
 alert(bold(blue("Press Enter to close")));

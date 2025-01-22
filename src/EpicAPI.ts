@@ -1,22 +1,18 @@
 import axios, { AxiosError } from "axios";
 import { delay } from "@std/async/delay";
-import * as v from "@valibot/valibot";
+import * as v from "valibot";
 
 const auth = {
   username: "98f7e42c2e3a4f86a74eb43fbb41ed39",
   password: "0a2449a2-001a-451e-afec-3e812901c4d7",
 };
 
-const http = axios.create({
-  headers: { "User-Agent": `github.com/RuiNtD/FNGG-LockerGenerator` },
-});
-
 const OAuthToken = v.object({
   access_token: v.string(),
 });
 
 export async function getAccessToken() {
-  const { data } = await http.post(
+  const { data } = await axios.post(
     "https://account-public-service-prod.ol.epicgames.com/account/api/oauth/token",
     { grant_type: "client_credentials" },
     {
@@ -38,7 +34,7 @@ export const OAuthDeviceAuth = v.object({
 export type OAuthDeviceAuth = v.InferOutput<typeof OAuthDeviceAuth>;
 
 export async function createDeviceAuth(accessToken: string) {
-  const { data } = await http.post(
+  const { data } = await axios.post(
     "https://account-public-service-prod.ol.epicgames.com/account/api/oauth/deviceAuthorization",
     {},
     {
@@ -66,7 +62,7 @@ const TokenError = v.object({
 export async function waitForDeviceCodeCompletion(deviceAuth: OAuthDeviceAuth) {
   while (true) {
     try {
-      const resp = await http.post(
+      const resp = await axios.post(
         "https://account-public-service-prod.ol.epicgames.com/account/api/oauth/token",
         { grant_type: "device_code", device_code: deviceAuth.device_code },
         {
@@ -106,7 +102,7 @@ export const EpicProfile = v.pipe(
 );
 
 export async function getProfile(profile: EpicAccount, profileId = "athena") {
-  const { data } = await http.post(
+  const { data } = await axios.post(
     "https://fngw-mcp-gc-livefn.ol.epicgames.com/fortnite/api" +
       `/game/v2/profile/${profile.account_id}/client/QueryProfile?profileId=${profileId}`,
     {},

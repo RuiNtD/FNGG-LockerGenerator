@@ -1,5 +1,6 @@
-import * as v from "@valibot/valibot";
+import * as v from "valibot";
 import pMemoize from "p-memoize";
+import axios from "axios";
 
 const FNAPICosmetics = v.object({
   status: v.literal(200),
@@ -12,7 +13,7 @@ const FNAPICosmetics = v.object({
 });
 
 async function _getFNAPICosmetics() {
-  const resp = await fetch("https://fortnite-api.com/v2/cosmetics/br");
-  return v.parse(FNAPICosmetics, await resp.json());
+  const { data } = await axios.get("https://fortnite-api.com/v2/cosmetics/br");
+  return v.parse(FNAPICosmetics, data);
 }
 export const getFNAPICosmetics = pMemoize(_getFNAPICosmetics);

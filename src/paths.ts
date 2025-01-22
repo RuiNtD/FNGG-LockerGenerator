@@ -1,9 +1,10 @@
 import $ from "@david/dax";
-import envPaths from "env-paths";
-const paths = envPaths("FNGG-LockerGenerator");
+import { dir } from "@cross/dir";
 
-export const cache = $.path(paths.cache);
-export const config = $.path(paths.config);
-export const data = $.path(paths.data);
-export const log = $.path(paths.log);
-export const temp = $.path(paths.temp);
+const cacheDir = $.path(await dir("cache", true));
+export const cache = cacheDir.join("FNGGLockerGenerator");
+
+// Migration
+const oldCache = cacheDir.join("FNGGLockerGenerator-nodejs");
+if ((await oldCache.exists()) && !(await cache.exists()))
+  await oldCache.rename(cache);
