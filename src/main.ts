@@ -65,7 +65,7 @@ while (!account) {
     $.log();
     $.logLight(
       "This code will expire after",
-      formatDuration(deviceAuth.expires_in * 1000, { ignoreZero: true })
+      formatDuration(deviceAuth.expires_in * 1000, { ignoreZero: true }),
     );
     $.log();
 
@@ -91,10 +91,10 @@ const url = await pb.with(async () => {
 
   const allItems = [
     ...Object.keys(accountItems).map(
-      (item) => accountItems[item].templateId.split(":")[1]
+      (item) => accountItems[item].templateId.split(":")[1],
     ),
     ...Object.keys(bannerItems).map(
-      (item) => bannerItems[item].templateId.split(":")[1]
+      (item) => bannerItems[item].templateId.split(":")[1],
     ),
   ];
 
@@ -154,7 +154,7 @@ const url = await pb.with(async () => {
     .filter(isTruthy)
     .sort((a, b) => a - b);
   const diff = ints.map((value, index) =>
-    index > 0 ? value - ints[index - 1] : value
+    index > 0 ? value - ints[index - 1] : value,
   );
 
   const data = zlib

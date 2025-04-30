@@ -18,7 +18,7 @@ export async function getAccessToken() {
     {
       auth,
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    }
+    },
   );
   return v.parse(OAuthToken, data).access_token;
 }
@@ -42,7 +42,7 @@ export async function createDeviceAuth(accessToken: string) {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    }
+    },
   );
   return v.parse(OAuthDeviceAuth, data);
 }
@@ -68,7 +68,7 @@ export async function waitForDeviceCodeCompletion(deviceAuth: OAuthDeviceAuth) {
         {
           auth,
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        }
+        },
       );
       return v.parse(EpicAccount, resp.data);
     } catch (e) {
@@ -98,7 +98,7 @@ export const EpicProfile = v.pipe(
       }),
     ]),
   }),
-  v.transform((v) => v.profileChanges[0].profile)
+  v.transform((v) => v.profileChanges[0].profile),
 );
 
 export async function getProfile(profile: EpicAccount, profileId = "athena") {
@@ -106,7 +106,7 @@ export async function getProfile(profile: EpicAccount, profileId = "athena") {
     "https://fngw-mcp-gc-livefn.ol.epicgames.com/fortnite/api" +
       `/game/v2/profile/${profile.account_id}/client/QueryProfile?profileId=${profileId}`,
     {},
-    { headers: { Authorization: `Bearer ${profile.access_token}` } }
+    { headers: { Authorization: `Bearer ${profile.access_token}` } },
   );
   return v.parse(EpicProfile, data);
 }

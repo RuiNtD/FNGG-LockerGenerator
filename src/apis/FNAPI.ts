@@ -8,7 +8,7 @@ const FNAPICosmetics = v.object({
     v.object({
       id: v.string(),
       builtInEmoteIds: v.optional(v.array(v.string())),
-    })
+    }),
   ),
 });
 

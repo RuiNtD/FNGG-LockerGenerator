@@ -62,7 +62,7 @@ export async function getPackContents(id: string | number) {
 
   const { data } = await axios.get<string>(
     `https://fortnite.gg/item-details?id=${id}`,
-    { responseType: "text" }
+    { responseType: "text" },
   );
 
   const matches = data.matchAll(/a href='\/cosmetics\?id=(\d+)'/gi);
