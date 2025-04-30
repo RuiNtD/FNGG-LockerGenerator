@@ -1,4 +1,5 @@
 {
+  "version": "1.0.1",
   "tasks": {
     "start": "./src/main.ts",
     "compile": "deno task compileWindows && deno task compileMac && deno task compileLinux",
@@ -8,12 +9,13 @@
   },
   "imports": {
     "@cross/dir": "jsr:@cross/dir@^1.1.0",
-    "@david/dax": "jsr:@david/dax@^0.42.0",
-    "@std/async": "jsr:@std/async@^1.0.10",
-    "@std/cli": "jsr:@std/cli@^1.0.11",
-    "@std/fmt": "jsr:@std/fmt@^1.0.4",
-    "axios": "npm:axios@^1.7.9",
+    "@david/dax": "jsr:@david/dax@^0.43.0",
+    "@std/async": "jsr:@std/async@^1.0.12",
+    "@std/cli": "jsr:@std/cli@^1.0.17",
+    "@std/fmt": "jsr:@std/fmt@^1.0.7",
+    "axios": "npm:axios@^1.9.0",
+    "is-truthy-ts": "npm:is-truthy-ts@^1.0.2",
     "p-memoize": "npm:p-memoize@^7.1.1",
-    "valibot": "npm:valibot@^1.0.0-beta.14"
+    "valibot": "npm:valibot@^1.0.0"
   }
 }

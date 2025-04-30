@@ -11,6 +11,37 @@ async function _getFNGGItems() {
 }
 export const getFNGGItems = pMemoize(_getFNGGItems);
 
+async function _getFNGGItemsKeys() {
+  return Object.keys(await getFNGGItems());
+}
+export const getFNGGItemsKeys = pMemoize(_getFNGGItemsKeys);
+
+async function _getFNGGItemsLowercase() {
+  const keys = await getFNGGItemsKeys();
+  return keys.map((x) => x.toLowerCase());
+}
+export const getFNGGItemsLowercase = pMemoize(_getFNGGItemsLowercase);
+
+export async function fixFnId(templateId: string) {
+  const keys = await getFNGGItemsKeys();
+  const lowercase = await getFNGGItemsLowercase();
+  return keys[lowercase.indexOf(templateId.toLowerCase())];
+}
+
+export async function fnToFngg(templateId: string) {
+  const items = await getFNGGItems();
+  const fixed = await fixFnId(templateId);
+  return parseInt(items[fixed]) || undefined;
+}
+
+export async function fnggToFn(id: string | number) {
+  id = `${id}`;
+  const items = await getFNGGItems();
+  for (const [key, value] of Object.entries(items))
+    if (value === id) return key;
+  return undefined;
+}
+
 const FNGGBundle = v.object({
   items: v.array(v.string()),
 });

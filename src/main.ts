@@ -8,7 +8,14 @@ import {
   getBannerProfile,
   EpicAccount,
 } from "./apis/Epic.ts";
-import { getFNGGBundles, getFNGGItems, getPackContents } from "./apis/FNGG.ts";
+import {
+  fixFnId,
+  fnggToFn,
+  fnToFngg,
+  getFNGGBundles,
+  getFNGGItems,
+  getPackContents,
+} from "./apis/FNGG.ts";
 import { getFNAPICosmetics } from "./apis/FNAPI.ts";
 import * as zlib from "node:zlib";
 import { shortenURL } from "./apis/shortener.ts";
@@ -18,15 +25,17 @@ import { format as formatDuration } from "@std/fmt/duration";
 import { parseArgs } from "@std/cli/parse-args";
 import { delay } from "@std/async/delay";
 import axios from "axios";
+import { isTruthy } from "is-truthy-ts";
+import denoJson from "../deno.json" with { type: "json" };
 
 const _USER_AGENT_ = "github.com/RuiNtD/FNGG-LockerGenerator";
-let _VERSION_ = "1.0.1";
 
 const argv = parseArgs(Deno.args, {
   boolean: ["compiled"],
 });
 
 const isCompiled = argv.compiled;
+let _VERSION_ = denoJson.version;
 if (!isCompiled) _VERSION_ += " (dev)";
 export { _VERSION_ };
 
@@ -89,16 +98,9 @@ const url = await pb.with(async () => {
     ),
   ];
 
-  const fnggItems = await getFNGGItems();
-  const fnggItemsKeys = Object.keys(fnggItems);
-  const fnggItemsLowercase = fnggItemsKeys.map((x) => x.toLowerCase());
-
   for (const item of allItems) {
-    if (fnggItemsLowercase.includes(item)) {
-      const originalId =
-        fnggItemsKeys[fnggItemsLowercase.indexOf(item.toLowerCase())];
-      locker.push(originalId);
-    }
+    const fixed = await fixFnId(item);
+    if (fixed) locker.push(fixed);
   }
 
   // Add built-in emotes
@@ -126,14 +128,14 @@ const url = await pb.with(async () => {
   }
 
   // Packs
-  for (const [fnID, ggID] of Object.entries(fnggItems)) {
+  for (const [fnID, ggID] of Object.entries(await getFNGGItems())) {
     if (!fnID.startsWith("Pack_")) continue;
     const items = await getPackContents(ggID);
     if (!items) continue;
 
     let owned = true;
     for (const item of items) {
-      const itemID = fnggItemsKeys.find((x) => fnggItems[x] === item);
+      const itemID = await fnggToFn(item);
       if (!itemID) continue;
       if (!locker.includes(itemID)) {
         owned = false;
@@ -148,8 +150,8 @@ const url = await pb.with(async () => {
 
   // Finalize
   locker = [...new Set(locker)]; // Remove duplicates
-  const ints = locker
-    .map((id) => parseInt(fnggItems[id]))
+  const ints = (await Promise.all(locker.map(fnToFngg)))
+    .filter(isTruthy)
     .sort((a, b) => a - b);
   const diff = ints.map((value, index) =>
     index > 0 ? value - ints[index - 1] : value
