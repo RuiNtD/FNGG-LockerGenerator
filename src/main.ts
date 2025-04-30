@@ -7,11 +7,11 @@ import {
   waitForDeviceCodeCompletion,
   getBannerProfile,
   EpicAccount,
-} from "./EpicAPI.ts";
-import { getFNGGBundles, getFNGGItems, getPackContents } from "./FNGGAPI.ts";
-import { getFNAPICosmetics } from "./FNAPI.ts";
+} from "./apis/Epic.ts";
+import { getFNGGBundles, getFNGGItems, getPackContents } from "./apis/FNGG.ts";
+import { getFNAPICosmetics } from "./apis/FNAPI.ts";
 import * as zlib from "node:zlib";
-import { shortenURL } from "./shortener.ts";
+import { shortenURL } from "./apis/shortener.ts";
 import $ from "@david/dax";
 import { bold, blue, underline } from "@std/fmt/colors";
 import { format as formatDuration } from "@std/fmt/duration";

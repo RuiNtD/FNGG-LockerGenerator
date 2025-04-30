@@ -1,6 +1,6 @@
 import * as v from "valibot";
 import pMemoize from "p-memoize";
-import { cache } from "./paths.ts";
+import { cache } from "../paths.ts";
 import axios from "axios";
 
 const FNGGItems = v.record(v.string(), v.string());
@@ -22,7 +22,7 @@ async function _getFNGGBundles() {
 }
 export const getFNGGBundles = pMemoize(_getFNGGBundles);
 
-const cacheDir = await cache.join("packs").ensureDir();
+const cacheDir = cache.join("packs");
 const PackCache = v.array(v.string());
 export async function getPackContents(id: string | number) {
   const cacheFile = cacheDir.join(`${id}.json`);
@@ -37,6 +37,7 @@ export async function getPackContents(id: string | number) {
   const matches = data.matchAll(/a href='\/cosmetics\?id=(\d+)'/gi);
   const ret = matches.toArray().map((v) => v[1]);
   if (!ret.length) return undefined;
+  await cacheFile.ensureFile();
   await cacheFile.writeJson(ret);
   return ret;
 }
