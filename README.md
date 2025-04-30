@@ -21,8 +21,10 @@ After completing the authorization, start the process and the program will open 
 - Liqutch for the [original Python version this is based on][upstream]!
 - xMistt's [DeviceAuthGenerator]
 - LeleDerGrasshalmi's [Epic Games API Documentation][endpoints]
+- Fecooo for [the use of their APIs][fecooo]
 
 [latest]: https://github.com/RuiNtD/FNGG-LockerGenerator/releases/latest
 [upstream]: https://github.com/Liqutch/FNGG-LockerGenerator
 [DeviceAuthGenerator]: https://github.com/xMistt/DeviceAuthGenerator
 [endpoints]: https://github.com/LeleDerGrasshalmi/FortniteEndpointsDocumentation/tree/main/EpicGames/FN-Service/Game/Profile
+[fecooo]: https://github.com/Fecooo/FNGGLocker/issues/2
