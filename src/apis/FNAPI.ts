@@ -16,4 +16,5 @@ async function _getFNAPICosmetics() {
   const { data } = await axios.get("https://fortnite-api.com/v2/cosmetics/br");
   return v.parse(FNAPICosmetics, data);
 }
+/** @deprecated */
 export const getFNAPICosmetics = pMemoize(_getFNAPICosmetics);

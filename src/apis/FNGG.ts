@@ -55,6 +55,7 @@ export const getFNGGBundles = pMemoize(_getFNGGBundles);
 
 const cacheDir = cache.join("packs");
 const PackCache = v.array(v.string());
+/** @deprecated */
 export async function getPackContents(id: string | number) {
   const cacheFile = cacheDir.join(`${id}.json`);
   const cacheData = v.safeParse(PackCache, await cacheFile.readMaybeJson());
