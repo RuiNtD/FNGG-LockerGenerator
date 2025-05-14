@@ -2,6 +2,9 @@ import axios from "axios";
 import * as v from "valibot";
 import pMemoize from "p-memoize";
 
+// APIs provided by Fecooo on GitHub:
+// https://github.com/Fecooo/FNGGLocker
+
 const FecoooOffers = v.record(v.string(), v.number());
 
 async function _getFecoooOffers() {
