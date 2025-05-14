@@ -25,6 +25,7 @@ import { format as formatDuration } from "@std/fmt/duration";
 import { parseArgs } from "@std/cli/parse-args";
 import { delay } from "@std/async/delay";
 import axios from "axios";
+import { getFecoooBuiltins, getFecoooOffers } from "./apis/fecooo.ts";
 import { isTruthy } from "is-truthy-ts";
 import denoJson from "../deno.json" with { type: "json" };
 
@@ -115,34 +116,53 @@ const url = await pb.with(async () => {
   pb.message("bundles and packs");
 
   // Add bundles
-  const allBundles = await getFNGGBundles();
-  for (const [bundle, { items }] of Object.entries(allBundles)) {
-    let owned = true;
-    for (const item of items) {
-      if (!locker.includes(item)) {
-        owned = false;
-        break;
-      }
+  try {
+    const builtins = await getFecoooBuiltins();
+    for (const [id, emote] of Object.entries(builtins)) {
+      if (locker.includes(id)) locker.push(emote);
     }
-    if (owned) locker.push(bundle);
+  } catch {
+    $.logLight("Failed to get built-in emotes. Trying backup method.");
+    const allBundles = await getFNGGBundles();
+    for (const [bundle, { items }] of Object.entries(allBundles)) {
+      let owned = true;
+      for (const item of items) {
+        if (!locker.includes(item)) {
+          owned = false;
+          break;
+        }
+      }
+      if (owned) locker.push(bundle);
+    }
   }
 
   // Packs
-  for (const [fnID, ggID] of Object.entries(await getFNGGItems())) {
-    if (!fnID.startsWith("Pack_")) continue;
-    const items = await getPackContents(ggID);
-    if (!items) continue;
-
-    let owned = true;
-    for (const item of items) {
-      const itemID = await fnggToFn(item);
-      if (!itemID) continue;
-      if (!locker.includes(itemID)) {
-        owned = false;
-        break;
-      }
+  try {
+    const packs = await getFecoooOffers();
+    for (const [_fnid, _packId] of Object.entries(packs)) {
+      const fnid = await fixFnId(_fnid);
+      const packId = await fnggToFn(_packId);
+      if (!fnid || !packId) continue;
+      if (locker.includes(fnid)) locker.push(packId);
     }
-    if (owned) locker.push(fnID);
+  } catch {
+    $.logLight("Failed to get packs. Trying backup method.");
+    for (const [fnID, ggID] of Object.entries(await getFNGGItems())) {
+      if (!fnID.startsWith("Pack_")) continue;
+      const items = await getPackContents(ggID);
+      if (!items) continue;
+
+      let owned = true;
+      for (const item of items) {
+        const itemID = await fnggToFn(item);
+        if (!itemID) continue;
+        if (!locker.includes(itemID)) {
+          owned = false;
+          break;
+        }
+      }
+      if (owned) locker.push(fnID);
+    }
   }
 
   pb.prefix("Finalizing...");
