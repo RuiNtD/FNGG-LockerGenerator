@@ -16,6 +16,6 @@
     "axios": "npm:axios@^1.9.0",
     "is-truthy-ts": "npm:is-truthy-ts@^1.0.2",
     "p-memoize": "npm:p-memoize@^7.1.1",
-    "valibot": "npm:valibot@^1.0.0"
+    "zod": "npm:zod@^3.25.7"
   }
 }

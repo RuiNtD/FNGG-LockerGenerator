@@ -1,8 +1,8 @@
 import axios from "axios";
-import * as v from "valibot";
+import { z } from "zod/v4-mini";
 
-const SpoomeResp = v.object({
-  short_url: v.string(),
+const SpoomeResp = z.object({
+  short_url: z.string(),
 });
 
 export async function shortenURL(url: string): Promise<string> {
@@ -14,16 +14,16 @@ export async function shortenURL(url: string): Promise<string> {
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
       },
-    },
+    }
   );
-  const resp = v.parse(SpoomeResp, data);
+  const resp = SpoomeResp.parse(data);
   return resp.short_url;
 }
 
 if (import.meta.main) {
   console.log(
     await shortenURL(
-      "https://maps.google.co.uk/maps?f=q&source=s_q&hl=en&geocode=&q=louth&sll=53.800651,-4.064941&sspn=33.219383,38.803711&ie=UTF8&hq=&hnear=Louth,+United+Kingdom&ll=53.370272,-0.004034&spn=0.064883,0.075788&z=14",
-    ),
+      "https://maps.google.co.uk/maps?f=q&source=s_q&hl=en&geocode=&q=louth&sll=53.800651,-4.064941&sspn=33.219383,38.803711&ie=UTF8&hq=&hnear=Louth,+United+Kingdom&ll=53.370272,-0.004034&spn=0.064883,0.075788&z=14"
+    )
   );
 }

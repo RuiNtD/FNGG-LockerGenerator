@@ -1,5 +1,5 @@
 {
-  "version": "4",
+  "version": "5",
   "specifiers": {
     "jsr:@cross/deepmerge@1": "1.0.0",
     "jsr:@cross/dir@^1.1.0": "1.1.0",
@@ -21,7 +21,7 @@
     "npm:axios@^1.9.0": "1.9.0",
     "npm:is-truthy-ts@^1.0.2": "1.0.2",
     "npm:p-memoize@^7.1.1": "7.1.1",
-    "npm:valibot@1": "1.0.0"
+    "npm:zod@^3.25.7": "3.25.7"
   },
   "jsr": {
     "@cross/deepmerge@1.0.0": {
@@ -243,8 +243,8 @@
     "type-fest@3.13.1": {
       "integrity": "sha512-tLq3bSNx+xSpwvAJnzrK0Ep5CLNWjvFTOp71URMaAEWBfRb9nnJiBoUe0tF8bI4ZFO3omgBR6NvnbzVUT3Ly4g=="
     },
-    "valibot@1.0.0": {
-      "integrity": "sha512-1Hc0ihzWxBar6NGeZv7fPLY0QuxFMyxwYR2sF1Blu7Wq7EnremwY2W02tit2ij2VJT8HcSkHAQqmFfl77f73Yw=="
+    "zod@3.25.7": {
+      "integrity": "sha512-YGdT1cVRmKkOg6Sq7vY7IkxdphySKnXhaUmFI4r4FcuFVNgpCb9tZfNwXbT6BPjD5oz0nubFsoo9pIqKrDcCvg=="
     }
   },
   "workspace": {
@@ -257,7 +257,7 @@
       "npm:axios@^1.9.0",
       "npm:is-truthy-ts@^1.0.2",
       "npm:p-memoize@^7.1.1",
-      "npm:valibot@1"
+      "npm:zod@^3.25.7"
     ]
   }
 }

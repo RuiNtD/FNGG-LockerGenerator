@@ -1,20 +1,20 @@
-import * as v from "valibot";
+import { z } from "zod/v4-mini";
 import pMemoize from "p-memoize";
 import axios from "axios";
 
-const FNAPICosmetics = v.object({
-  status: v.literal(200),
-  data: v.array(
-    v.object({
-      id: v.string(),
-      builtInEmoteIds: v.optional(v.array(v.string())),
-    }),
+const FNAPICosmetics = z.object({
+  status: z.literal(200),
+  data: z.array(
+    z.object({
+      id: z.string(),
+      builtInEmoteIds: z.optional(z.array(z.string())),
+    })
   ),
 });
 
 async function _getFNAPICosmetics() {
   const { data } = await axios.get("https://fortnite-api.com/v2/cosmetics/br");
-  return v.parse(FNAPICosmetics, data);
+  return FNAPICosmetics.parse(data);
 }
-/** @deprecated */
+/** @deprecated Fecooo API is preferred */
 export const getFNAPICosmetics = pMemoize(_getFNAPICosmetics);

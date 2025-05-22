@@ -1,22 +1,22 @@
 import axios from "axios";
-import * as v from "valibot";
+import { z } from "zod/v4-mini";
 import pMemoize from "p-memoize";
 
 // APIs provided by Fecooo on GitHub:
 // https://github.com/Fecooo/FNGGLocker
 
-const FecoooOffers = v.record(v.string(), v.number());
+const FecoooOffers = z.record(z.string(), z.number());
 
 async function _getFecoooOffers() {
   const { data } = await axios.get("https://api.fecooo.hu/fngg/offers");
-  return v.parse(FecoooOffers, await data);
+  return FecoooOffers.parse(data);
 }
 export const getFecoooOffers = pMemoize(_getFecoooOffers);
 
-const FecoooBuiltins = v.record(v.string(), v.string());
+const FecoooBuiltins = z.record(z.string(), z.string());
 
 async function _getFecoooBuiltins() {
   const { data } = await axios.get("https://api.fecooo.hu/fngg/builtins");
-  return v.parse(FecoooBuiltins, await data);
+  return FecoooBuiltins.parse(data);
 }
 export const getFecoooBuiltins = pMemoize(_getFecoooBuiltins);
