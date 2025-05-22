@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { delay } from "@std/async/delay";
+import $ from "@david/dax";
 import { z } from "zod/v4-mini";
 
 const auth = {
@@ -78,7 +78,7 @@ export async function waitForDeviceCodeCompletion(deviceAuth: OAuthDeviceAuth) {
           error.errorCode ===
           "errors.com.epicgames.account.oauth.authorization_pending"
         )
-          await delay(deviceAuth.interval * 1000);
+          await $.sleep(deviceAuth.interval * 1000);
         else if (error.errorCode === "errors.com.epicgames.not_found")
           throw "expired";
         else throw error.errorMessage;

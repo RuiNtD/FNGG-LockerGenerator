@@ -6,14 +6,13 @@
     "jsr:@cross/env@1": "1.0.2",
     "jsr:@cross/runtime@1": "1.1.0",
     "jsr:@cross/utils@0.7": "0.7.1",
-    "jsr:@david/dax@0.43": "0.43.0",
+    "jsr:@david/dax@~0.43.1": "0.43.1",
     "jsr:@david/path@0.2": "0.2.0",
     "jsr:@david/which@~0.4.1": "0.4.1",
-    "jsr:@std/async@^1.0.12": "1.0.12",
     "jsr:@std/bytes@^1.0.5": "1.0.5",
     "jsr:@std/cli@^1.0.17": "1.0.17",
-    "jsr:@std/fmt@1": "1.0.7",
-    "jsr:@std/fmt@^1.0.7": "1.0.7",
+    "jsr:@std/fmt@1": "1.0.8",
+    "jsr:@std/fmt@^1.0.8": "1.0.8",
     "jsr:@std/fs@1": "1.0.16",
     "jsr:@std/io@0.225": "0.225.2",
     "jsr:@std/path@1": "1.0.8",
@@ -51,8 +50,8 @@
         "jsr:@cross/runtime"
       ]
     },
-    "@david/dax@0.43.0": {
-      "integrity": "72068d3b9eb00c08d70d0d1e2db8872402377279a0e6c88df172112eee1357f1",
+    "@david/dax@0.43.1": {
+      "integrity": "2891dd94b53b8dec5d9caeeefe8378346a245d58edeb275274ef562b9434180e",
       "dependencies": [
         "jsr:@david/path",
         "jsr:@david/which",
@@ -72,17 +71,14 @@
     "@david/which@0.4.1": {
       "integrity": "896a682b111f92ab866cc70c5b4afab2f5899d2f9bde31ed00203b9c250f225e"
     },
-    "@std/async@1.0.12": {
-      "integrity": "d1bfcec459e8012846fe4e38dfc4241ab23240ecda3d8d6dfcf6d81a632e803d"
-    },
     "@std/bytes@1.0.5": {
       "integrity": "4465dd739d7963d964c809202ebea6d5c6b8e3829ef25c6a224290fbb8a1021e"
     },
     "@std/cli@1.0.17": {
       "integrity": "e15b9abe629e17be90cc6216327f03a29eae613365f1353837fa749aad29ce7b"
     },
-    "@std/fmt@1.0.7": {
-      "integrity": "2a727c043d8df62cd0b819b3fb709b64dd622e42c3b1bb817ea7e6cc606360fb"
+    "@std/fmt@1.0.8": {
+      "integrity": "71e1fc498787e4434d213647a6e43e794af4fd393ef8f52062246e06f7e372b7"
     },
     "@std/fs@1.0.16": {
       "integrity": "81878f62b6eeda0bf546197fc3daa5327c132fee1273f6113f940784a468b036",
@@ -250,10 +246,9 @@
   "workspace": {
     "dependencies": [
       "jsr:@cross/dir@^1.1.0",
-      "jsr:@david/dax@0.43",
-      "jsr:@std/async@^1.0.12",
+      "jsr:@david/dax@~0.43.1",
       "jsr:@std/cli@^1.0.17",
-      "jsr:@std/fmt@^1.0.7",
+      "jsr:@std/fmt@^1.0.8",
       "npm:axios@^1.9.0",
       "npm:is-truthy-ts@^1.0.2",
       "npm:p-memoize@^7.1.1",

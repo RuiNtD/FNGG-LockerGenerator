@@ -23,7 +23,6 @@ import $ from "@david/dax";
 import { bold, blue, underline } from "@std/fmt/colors";
 import { format as formatDuration } from "@std/fmt/duration";
 import { parseArgs } from "@std/cli/parse-args";
-import { delay } from "@std/async/delay";
 import axios from "axios";
 import { getFecoooBuiltins, getFecoooOffers } from "./apis/fecooo.ts";
 import { isTruthy } from "is-truthy-ts";
@@ -47,7 +46,7 @@ const header = bold(underline(`Fortnite.GG Locker Generator v${_VERSION_}`));
 console.clear();
 $.log(header);
 // Articifical delay so the version still shows even if it crashes
-await delay(1000);
+await $.sleep(1000);
 
 let account: EpicAccount | undefined;
 while (!account) {

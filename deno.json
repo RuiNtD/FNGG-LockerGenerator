@@ -9,10 +9,9 @@
   },
   "imports": {
     "@cross/dir": "jsr:@cross/dir@^1.1.0",
-    "@david/dax": "jsr:@david/dax@^0.43.0",
-    "@std/async": "jsr:@std/async@^1.0.12",
+    "@david/dax": "jsr:@david/dax@^0.43.1",
     "@std/cli": "jsr:@std/cli@^1.0.17",
-    "@std/fmt": "jsr:@std/fmt@^1.0.7",
+    "@std/fmt": "jsr:@std/fmt@^1.0.8",
     "axios": "npm:axios@^1.9.0",
     "is-truthy-ts": "npm:is-truthy-ts@^1.0.2",
     "p-memoize": "npm:p-memoize@^7.1.1",
