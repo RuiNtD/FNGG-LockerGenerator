@@ -9,12 +9,10 @@
   },
   "imports": {
     "@cross/dir": "jsr:@cross/dir@^1.1.0",
-    "@david/dax": "jsr:@david/dax@^0.43.1",
-    "@std/cli": "jsr:@std/cli@^1.0.17",
+    "@david/dax": "jsr:@david/dax@^0.43.2",
     "@std/fmt": "jsr:@std/fmt@^1.0.8",
-    "axios": "npm:axios@^1.9.0",
     "is-truthy-ts": "npm:is-truthy-ts@^1.0.2",
-    "p-memoize": "npm:p-memoize@^7.1.1",
-    "zod": "npm:zod@^3.25.7"
+    "p-memoize": "npm:p-memoize@^8.0.0",
+    "zod": "npm:zod@^4.1.12"
   }
 }

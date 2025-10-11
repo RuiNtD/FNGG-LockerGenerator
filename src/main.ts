@@ -22,24 +22,9 @@ import { shortenURL } from "./apis/shortener.ts";
 import $ from "@david/dax";
 import { bold, blue, underline } from "@std/fmt/colors";
 import { format as formatDuration } from "@std/fmt/duration";
-import { parseArgs } from "@std/cli/parse-args";
-import axios from "axios";
 import { getFecoooBuiltins, getFecoooOffers } from "./apis/fecooo.ts";
 import { isTruthy } from "is-truthy-ts";
-import denoJson from "../deno.json" with { type: "json" };
-
-const _USER_AGENT_ = "github.com/RuiNtD/FNGG-LockerGenerator";
-
-const argv = parseArgs(Deno.args, {
-  boolean: ["compiled"],
-});
-
-const isCompiled = argv.compiled;
-let _VERSION_ = denoJson.version;
-if (!isCompiled) _VERSION_ += " (dev)";
-export { _VERSION_ };
-
-axios.defaults.headers["User-Agent"] = `${_USER_AGENT_} v${_VERSION_}`;
+import { _VERSION_ } from "./const.ts";
 
 const header = bold(underline(`Fortnite.GG Locker Generator v${_VERSION_}`));
 
@@ -105,34 +90,35 @@ const url = await pb.with(async () => {
 
   // Add built-in emotes
   pb.message("built-in emotes");
-  const cosmetics = await getFNAPICosmetics();
-  for (const id of locker) {
-    const cosmetic = cosmetics.data.find((x) => x.id === id);
-    if (!cosmetic) continue;
-    for (const emote of cosmetic.builtInEmoteIds || []) locker.push(emote);
-  }
-
-  pb.message("bundles and packs");
-
-  // Add bundles
   try {
     const builtins = await getFecoooBuiltins();
     for (const [id, emote] of Object.entries(builtins)) {
       if (locker.includes(id)) locker.push(emote);
     }
-  } catch {
+  } catch (e) {
     $.logLight("Failed to get built-in emotes. Trying backup method.");
-    const allBundles = await getFNGGBundles();
-    for (const [bundle, { items }] of Object.entries(allBundles)) {
-      let owned = true;
-      for (const item of items) {
-        if (!locker.includes(item)) {
-          owned = false;
-          break;
-        }
-      }
-      if (owned) locker.push(bundle);
+    $.logLight(e);
+    const cosmetics = await getFNAPICosmetics();
+    for (const id of locker) {
+      const cosmetic = cosmetics.data.find((x) => x.id === id);
+      if (!cosmetic) continue;
+      for (const emote of cosmetic.builtInEmoteIds || []) locker.push(emote);
     }
+  }
+
+  pb.message("bundles and packs");
+
+  // Add bundles
+  const allBundles = await getFNGGBundles();
+  for (const [bundle, { items }] of Object.entries(allBundles)) {
+    let owned = true;
+    for (const item of items) {
+      if (!locker.includes(item)) {
+        owned = false;
+        break;
+      }
+    }
+    if (owned) locker.push(bundle);
   }
 
   // Packs

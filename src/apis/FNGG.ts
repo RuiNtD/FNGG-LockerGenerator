@@ -1,13 +1,16 @@
-import { z } from "zod/v4-mini";
+import * as z from "zod";
 import pMemoize from "p-memoize";
 import { cache } from "../paths.ts";
-import axios from "axios";
+import { USER_AGENT } from "../const.ts";
 
 const FNGGItems = z.record(z.string(), z.string());
 
 async function _getFNGGItems() {
-  const { data } = await axios.get("https://fortnite.gg/api/items.json");
-  return FNGGItems.parse(await data);
+  const resp = await fetch("https://fortnite.gg/api/items.json", {
+    headers: { "User-Agent": USER_AGENT },
+  });
+  const json = await resp.json();
+  return FNGGItems.parse(json);
 }
 export const getFNGGItems = pMemoize(_getFNGGItems);
 
@@ -48,8 +51,11 @@ const FNGGBundle = z.object({
 const FNGGBundles = z.record(z.string(), FNGGBundle);
 
 async function _getFNGGBundles() {
-  const { data } = await axios.get("https://fortnite.gg/api/bundles.json");
-  return FNGGBundles.parse(data);
+  const resp = await fetch("https://fortnite.gg/api/bundles.json", {
+    headers: { "User-Agent": USER_AGENT },
+  });
+  const json = await resp.json();
+  return FNGGBundles.parse(json);
 }
 export const getFNGGBundles = pMemoize(_getFNGGBundles);
 
@@ -58,13 +64,13 @@ const PackCache = z.array(z.string());
 /** @deprecated Fecooo API is preferred */
 export async function getPackContents(id: string | number) {
   const cacheFile = cacheDir.join(`${id}.json`);
-  const cacheData = z.safeParse(PackCache, await cacheFile.readMaybeJson());
+  const cacheData = PackCache.safeParse(await cacheFile.readMaybeJson());
   if (cacheData.success) return cacheData.data;
 
-  const { data } = await axios.get<string>(
-    `https://fortnite.gg/item-details?id=${id}`,
-    { responseType: "text" }
-  );
+  const resp = await fetch(`https://fortnite.gg/item-details?id=${id}`, {
+    headers: { "User-Agent": USER_AGENT },
+  });
+  const data = await resp.text();
 
   const matches = data.matchAll(/a href='\/cosmetics\?id=(\d+)'/gi);
   const ret = matches.toArray().map((v) => v[1]);
