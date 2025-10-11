@@ -3,8 +3,8 @@
   "specifiers": {
     "jsr:@cross/deepmerge@1": "1.0.0",
     "jsr:@cross/dir@^1.1.0": "1.1.0",
-    "jsr:@cross/env@1": "1.0.2",
-    "jsr:@cross/runtime@1": "1.1.0",
+    "jsr:@cross/env@1": "1.0.3",
+    "jsr:@cross/runtime@1": "1.2.1",
     "jsr:@cross/utils@0.7": "0.7.1",
     "jsr:@david/console-static-text@0.3": "0.3.0",
     "jsr:@david/dax@~0.43.2": "0.43.2",
@@ -18,7 +18,6 @@
     "jsr:@std/io@0.225": "0.225.2",
     "jsr:@std/path@1": "1.1.1",
     "jsr:@std/path@^1.1.1": "1.1.1",
-    "npm:@types/node@*": "24.2.0",
     "npm:is-truthy-ts@^1.0.2": "1.0.2",
     "npm:p-memoize@8": "8.0.0",
     "npm:zod@^4.1.12": "4.1.12"
@@ -35,15 +34,15 @@
         "jsr:@cross/utils"
       ]
     },
-    "@cross/env@1.0.2": {
-      "integrity": "28501ad1043c218a5b00fe5db27ec62c01ab16371bbe1b9d738496f0a7c5eeb8",
+    "@cross/env@1.0.3": {
+      "integrity": "218d2dd68bec55cf047d1670a8bddc304b9c011a8ad22e647afa916bb796c8b4",
       "dependencies": [
         "jsr:@cross/deepmerge",
         "jsr:@cross/runtime"
       ]
     },
-    "@cross/runtime@1.1.0": {
-      "integrity": "f35a3b768a9de125277329483b684062ffc9ee86f4449cb8b3d614adcad64ffb"
+    "@cross/runtime@1.2.1": {
+      "integrity": "f462fcf2fd678f9073291b4e55209b90f58c8d508764a84205d178abdcf22fc9"
     },
     "@cross/utils@0.7.1": {
       "integrity": "6cc50ad31b0904364188c43d10e3d4888d817a3d415528b014c27deb8a35564e",
@@ -106,12 +105,6 @@
     }
   },
   "npm": {
-    "@types/node@24.2.0": {
-      "integrity": "sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==",
-      "dependencies": [
-        "undici-types"
-      ]
-    },
     "is-truthy-ts@1.0.2": {
       "integrity": "sha512-DDIN+AmWJUrwU7tFhlu1s9jViccjAPSmkoI5GM7R0j/hFKoRBy6/u2OUo1Pdr65rFAL9NR+m7dcSD+p/q95xXQ=="
     },
@@ -127,9 +120,6 @@
     },
     "type-fest@4.41.0": {
       "integrity": "sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA=="
-    },
-    "undici-types@7.10.0": {
-      "integrity": "sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag=="
     },
     "zod@4.1.12": {
       "integrity": "sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ=="

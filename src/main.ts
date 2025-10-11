@@ -75,12 +75,8 @@ const url = await pb.with(async () => {
   const bannerItems = (await getBannerProfile(account)).items;
 
   const allItems = [
-    ...Object.keys(accountItems).map(
-      (item) => accountItems[item].templateId.split(":")[1],
-    ),
-    ...Object.keys(bannerItems).map(
-      (item) => bannerItems[item].templateId.split(":")[1],
-    ),
+    ...Object.values(accountItems).map((item) => item.templateId.split(":")[1]),
+    ...Object.values(bannerItems).map((item) => item.templateId.split(":")[1]),
   ];
 
   for (const item of allItems) {
@@ -130,8 +126,9 @@ const url = await pb.with(async () => {
       if (!fnid || !packId) continue;
       if (locker.includes(fnid)) locker.push(packId);
     }
-  } catch {
+  } catch (e) {
     $.logLight("Failed to get packs. Trying backup method.");
+    $.logLight(e);
     for (const [fnID, ggID] of Object.entries(await getFNGGItems())) {
       if (!fnID.startsWith("Pack_")) continue;
       const items = await getPackContents(ggID);
@@ -150,17 +147,19 @@ const url = await pb.with(async () => {
     }
   }
 
+  // Finalize
   pb.prefix("Finalizing...");
   pb.message("");
 
-  // Finalize
   locker = [...new Set(locker)]; // Remove duplicates
   const ints = (await Promise.all(locker.map(fnToFngg)))
     .filter(isTruthy)
     .sort((a, b) => a - b);
-  const diff = ints.map((value, index) =>
-    index > 0 ? value - ints[index - 1] : value,
-  );
+  const diff = ints.map((value, index) => {
+    const last = ints[index - 1];
+    if (last === undefined) return value;
+    return value - last;
+  });
 
   const data = zlib
     .deflateRawSync(`${profile.created},${diff.join(",")}`)

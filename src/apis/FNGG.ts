@@ -34,7 +34,10 @@ export async function fixFnId(templateId: string) {
 export async function fnToFngg(templateId: string) {
   const items = await getFNGGItems();
   const fixed = await fixFnId(templateId);
-  return parseInt(items[fixed]) || undefined;
+  if (!fixed) return;
+  const item = items[fixed];
+  if (!item) return;
+  return parseInt(item);
 }
 
 export async function fnggToFn(id: string | number) {
@@ -74,7 +77,7 @@ export async function getPackContents(id: string | number) {
 
   const matches = data.matchAll(/a href='\/cosmetics\?id=(\d+)'/gi);
   const ret = matches.toArray().map((v) => v[1]);
-  if (!ret.length) return undefined;
+  if (!ret.length) return;
   await cacheFile.ensureFile();
   await cacheFile.writeJson(ret);
   return ret;
