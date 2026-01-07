@@ -2,6 +2,7 @@ import * as z from "zod";
 import pMemoize from "p-memoize";
 import { cache } from "../paths.ts";
 import { USER_AGENT } from "../const.ts";
+import { isTruthy } from "../util.ts";
 
 const FNGGItems = z.record(z.string(), z.string());
 
@@ -49,7 +50,9 @@ export async function fnggToFn(id: string | number) {
 }
 
 const FNGGBundle = z.object({
-  items: z.array(z.string()),
+  items: z
+    .array(z.string().or(z.literal(false)))
+    .transform((arr) => arr.filter(isTruthy)),
 });
 const FNGGBundles = z.record(z.string(), FNGGBundle);
 

@@ -23,8 +23,8 @@ import $ from "@david/dax";
 import { bold, blue, underline } from "@std/fmt/colors";
 import { format as formatDuration } from "@std/fmt/duration";
 import { getFecoooBuiltins, getFecoooOffers } from "./apis/fecooo.ts";
-import { isTruthy } from "is-truthy-ts";
 import { _VERSION_ } from "./const.ts";
+import { isTruthy } from "./util.ts";
 
 const header = bold(underline(`Fortnite.GG Locker Generator v${_VERSION_}`));
 
