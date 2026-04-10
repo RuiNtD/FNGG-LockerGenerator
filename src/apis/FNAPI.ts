@@ -1,6 +1,7 @@
 import * as z from "zod";
 import pMemoize from "p-memoize";
 import { USER_AGENT } from "../const.ts";
+import ky from "ky";
 
 const FNAPICosmetics = z.object({
   status: z.literal(200),
@@ -11,13 +12,10 @@ const FNAPICosmetics = z.object({
     }),
   ),
 });
-
 async function _getFNAPICosmetics() {
-  const resp = await fetch("https://fortnite-api.com/v2/cosmetics/br", {
+  return await ky("https://fortnite-api.com/v2/cosmetics/br", {
     headers: { "User-Agent": USER_AGENT },
-  });
-  const json = await resp.json();
-  return FNAPICosmetics.parse(json);
+  }).json(FNAPICosmetics);
 }
 /** @deprecated Fecooo API is preferred */
 export const getFNAPICosmetics = pMemoize(_getFNAPICosmetics);

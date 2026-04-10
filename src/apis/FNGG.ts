@@ -3,15 +3,16 @@ import pMemoize from "p-memoize";
 import { cache } from "../paths.ts";
 import { USER_AGENT } from "../const.ts";
 import { isTruthy } from "../util.ts";
+import ky from "ky";
+
+const api = ky.create({
+  baseUrl: "https://fortnite.gg/api/",
+  headers: { "User-Agent": USER_AGENT },
+});
 
 const FNGGItems = z.record(z.string(), z.string());
-
 async function _getFNGGItems() {
-  const resp = await fetch("https://fortnite.gg/api/items.json", {
-    headers: { "User-Agent": USER_AGENT },
-  });
-  const json = await resp.json();
-  return FNGGItems.parse(json);
+  return await api("items.json").json(FNGGItems);
 }
 export const getFNGGItems = pMemoize(_getFNGGItems);
 
@@ -55,13 +56,8 @@ const FNGGBundle = z.object({
     .transform((arr) => arr.filter(isTruthy)),
 });
 const FNGGBundles = z.record(z.string(), FNGGBundle);
-
 async function _getFNGGBundles() {
-  const resp = await fetch("https://fortnite.gg/api/bundles.json", {
-    headers: { "User-Agent": USER_AGENT },
-  });
-  const json = await resp.json();
-  return FNGGBundles.parse(json);
+  return await api("bundles.json").json(FNGGBundles);
 }
 export const getFNGGBundles = pMemoize(_getFNGGBundles);
 
@@ -73,11 +69,7 @@ export async function getPackContents(id: string | number) {
   const cacheData = PackCache.safeParse(await cacheFile.readMaybeJson());
   if (cacheData.success) return cacheData.data;
 
-  const resp = await fetch(`https://fortnite.gg/item-details?id=${id}`, {
-    headers: { "User-Agent": USER_AGENT },
-  });
-  const data = await resp.text();
-
+  const data = await ky(`/item-details?id=${id}`).text();
   const matches = data.matchAll(/a href='\/cosmetics\?id=(\d+)'/gi);
   const ret = matches.toArray().map((v) => v[1]);
   if (!ret.length) return;

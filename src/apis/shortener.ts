@@ -1,22 +1,21 @@
 import * as z from "zod";
 import { USER_AGENT } from "../const.ts";
+import ky from "ky";
 
-const SpoomeResp = z.object({
-  short_url: z.string(),
-});
-
+const SpoomeResp = z
+  .object({ short_url: z.string() })
+  .transform((v) => v.short_url);
 export async function shortenURL(url: string): Promise<string> {
-  const resp = await fetch("https://spoo.me/", {
-    method: "POST",
-    headers: {
-      "User-Agent": USER_AGENT,
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json",
-    },
-    body: new URLSearchParams({ url, "max-clicks": "1" }),
-  });
-  const json = await resp.json();
-  return SpoomeResp.parse(json).short_url;
+  return await ky
+    .post("https://spoo.me/", {
+      headers: {
+        "User-Agent": USER_AGENT,
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
+      },
+      body: new URLSearchParams({ url, "max-clicks": "1" }),
+    })
+    .json(SpoomeResp);
 }
 
 if (import.meta.main) {

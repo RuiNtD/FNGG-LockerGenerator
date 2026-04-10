@@ -20,6 +20,7 @@
     "jsr:@std/io@0.225": "0.225.2",
     "jsr:@std/path@1": "1.1.1",
     "jsr:@std/path@^1.1.1": "1.1.1",
+    "npm:ky@2": "2.0.0",
     "npm:p-memoize@8": "8.0.0",
     "npm:zod@^4.1.12": "4.1.12"
   },
@@ -115,6 +116,9 @@
     }
   },
   "npm": {
+    "ky@2.0.0": {
+      "integrity": "sha512-KzI4Vz5AbZFAUFYGx28PCSfFWUo6/qj9Br/P6KRwDieE1xfdz0tIONepJcLw/1xLocN13GgvfJGasa+pfSkbHg=="
+    },
     "mimic-function@5.0.1": {
       "integrity": "sha512-VP79XUPxV2CigYP3jWwAUFSku2aKqBH7uTAapFWCBqutsbmDo96KY5o8uh6U+/YSIn5OxJnXp73beVkpqMIGhA=="
     },
@@ -138,6 +142,7 @@
       "jsr:@david/dax@~0.43.2",
       "jsr:@std/assert@^1.0.16",
       "jsr:@std/fmt@^1.0.8",
+      "npm:ky@2",
       "npm:p-memoize@8",
       "npm:zod@^4.1.12"
     ]
