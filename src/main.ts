@@ -20,13 +20,13 @@ import { getFNAPICosmetics } from "./apis/FNAPI.ts";
 import * as zlib from "node:zlib";
 import { shortenURL } from "./apis/shortener.ts";
 import $ from "@david/dax";
-import { bold, blue, underline } from "@std/fmt/colors";
+import ansis from "ansis";
 import { format as formatDuration } from "@std/fmt/duration";
 import { getFecoooBuiltins, getFecoooOffers } from "./apis/fecooo.ts";
 import { _VERSION_ } from "./const.ts";
 import { isTruthy } from "./util.ts";
 
-const header = bold(underline(`Fortnite.GG Locker Generator v${_VERSION_}`));
+const header = ansis.bold.underline`Fortnite.GG Locker Generator v${_VERSION_}`;
 
 console.clear();
 $.log(header);
@@ -42,7 +42,7 @@ while (!account) {
     console.clear();
     $.log(header);
     $.log();
-    $.log(bold("Please sign into Fortnite using this link:"));
+    $.log(ansis.bold`Please sign into Fortnite using this link:`);
     $.log(deviceAuth.verification_uri_complete);
     $.log();
     $.log("Or go to:", deviceAuth.verification_uri);
@@ -170,5 +170,5 @@ const url = await pb.with(async () => {
 $.logStep(`Found ${locker.length} items`);
 
 const shortened = await shortenURL(url);
-$.log(bold("Locker URL:"), shortened);
-alert(bold(blue("Press Enter to close")));
+$.log(ansis.bold`Locker URL:`, shortened);
+alert(ansis.bold.blue`Press Enter to close`);
